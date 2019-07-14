@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  	<title>PHP中有漏洞的函数总结-php教程-PHP中文网</title>
+  	<meta name="keywords" content="有漏洞,php,函数" />
+  	<meta name="description" content="本篇文章讲述了PHP中存在这一些带有小漏洞的PHP函数，没有了解过PHP中有漏洞函数的可以看看，在实际的PHP开发中用到这些函数时需要注意哪些东西，我们废话少说，一起来看看这篇文章吧！"/>
+<meta property="article:author" content="韦小宝" />
+<meta property="article:published_first" content="," />	<script> try {var urlhash = window.location.hash;if (!urlhash.match("fromapp")) {if (navigator.userAgent.match(/(iPhone|iPod|Android|ios|iPad)/i)){window.location = "http://m.php.cn/article/387815.html";}}}catch (err) {}</script>
+<meta name="mobile-agent" content="format=html5;url=http://m.php.cn/article/387815.html">
+<meta http-equiv="Cache-Control" content="no-transform " />
+<link rel="shortcut icon" href="/favicon.ico" mce_href="/favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" href="/static/layui/css/layui.css?1">
+<link rel="stylesheet" href="/static/css/style.min.css?5.1.88">
+<link rel="alternate" media="only screen and (max-width: 640px)" href="http://m.php.cn/article/387815.html">
+<!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+<!--[if lt IE 9]>
+<script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+<script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+<![endif]--> 
+  	<link rel="stylesheet" href="/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault.css?1">
+  	<link rel="stylesheet" href="/static/ueditor/third-party/SyntaxHighlighter/shCoreDefault1.css">
+  	<style type="text/css">
+		.layui-badge-dots{margin-right: 15px;width: 5px;height: 5px;background: #bbb!important;position: relative;display: inline-block;font-size: 12px;text-align: center;background-color: #FF5722;color: #fff;padding: 0;border-radius: 50%;}
+		.relevant{color: #666;}
+		.relevant:hover{color: #bbb}
+ 	 </style>
+	  <script type="application/ld+json">
+		 {
+		 "@context": "https://zhanzhang.baidu.com/contexts/cambrian.jsonld",
+		 "@id": "http://www.php.cn/php-weizijiaocheng-387815.html",
+		 "title": "PHP中有漏洞的函数总结",
+		 "description": "本篇文章讲述了PHP中存在这一些带有小漏洞的PHP函数，没有了解过PHP中有漏洞函数的可以看看，在实际的PHP开发中用到这些函数时需要注意哪些东西，我们废话少说，一起来看看这篇文章吧！",
+		 "images": ["http://img.php.cn/upload/article/000/013/745/5aa1054d8a7f5569.jpg"],
+		 "pubDate": "2018-03-08T17:41:44"
+		 }
+	   </script>
+</head>
+<body class="site-home" id="LAY_home" style="background-color: #eee;">
+<div class="layui-header header header-index">
+    <div class="layui-col-md3 php-logo">
+        <a href="/" target="_self" class="hide-text"></a>
+    </div>
+    <ul class="layui-nav php-nav">
+        <li class="layui-nav-item ">
+            <a href="/" title="php中文网首页">首页</a>
+        </li><li class="layui-nav-item ">
+            <a href="/course.html" title="视频教程">视频教程</a>
+        </li>
+        <li class="layui-nav-item ">
+            <a href="/wenda.html" title="社区问答">社区问答</a>
+        </li>
+        <li class="layui-nav-item layui-hide-xs ">
+            <a href="/article.html" title="技术文章">技术文章</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/toutiao.html" target="_blank">每日头条</a></dd>
+                <dd><a href="/php-weizijiaocheng.html" target="_blank">php教程</a></dd>
+                <dd class="layui-show-xs"><a href="/jishu/php/" target="_blank">php小知识<span class="layui-badge-dot"></span></a></dd>
+                <dd><a href="/mysql-tutorials.html" target="_blank">mysql教程</a></dd>
+                <dd><a href="/tool/" target="_blank">开发工具</a></dd>
+                <dd><a href="/div-tutorial.html" target="_blank">html教程</a></dd>
+                <dd><a href="/js-tutorial.html" target="_blank">javascript教程</a></dd>
+                <dd><a href="/css-tutorial.html" target="_blank">css教程</a></dd>
+                <dd><a href="/server.html" target="_blank">服务器运维</a></dd>
+                <dd><a href="/blog.html" target="_blank">博客文章</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item layui-hide-xs ">
+            <a href="/dic.html" title="编程词典">编程词典</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/dic/29.html" target="_blank">php词典</a></dd>
+                <dd class="layui-show-xs"><a href="/course/type/99.html" target="_blank">原生手册<span class="layui-badge-dot"></span></a></dd>
+                <dd><a href="/dic/51.html" target="_blank">mysql词典</a></dd>
+                <dd><a href="/dic/33.html" target="_blank">Linux词典</a></dd>
+                <dd><a href="/dic/54.html" target="_blank">Redis词典</a></dd>
+                <dd><a href="/dic/11.html" target="_blank">html词典</a></dd>
+                <dd><a href="/dic/17.html" target="_blank">javascript词典</a></dd>
+                <dd><a href="/dic/12.html" target="_blank">css词典</a></dd>
+                <dd><a href="/dic/15.html" target="_blank">Bootstrap词典</a></dd>
+                <dd><a href="/dic/19.html" target="_blank">jquery词典</a></dd>
+            </dl>
+        </li>
+        <li class="layui-nav-item">
+            <a target="_blank" href="/xiazai/" title="资源下载">资源下载</a>
+            <dl class="layui-nav-child">
+                <dd><a href="/xiazai/shouce" target="_blank" title="手册下载">手册下载</a></dd>
+                <dd><a href="/xiazai/gongju" target="_blank" title="工具下载">工具下载</a></dd>
+                <dd><a href="/xiazai/learn" target="_blank" title="学习课件">学习课件</a></dd>
+                <dd><a href="/xiazai/js" target="_blank" title="js特效">js特效</a></dd>
+                <dd><a href="/xiazai/code" target="_blank" title="网站源码">网站源码</a></dd>
+                <dd><a href="/xiazai/leiku" target="_blank" title="类库下载">类库下载</a></dd>
+            </dl> 
+        </li>
+                <li class="layui-nav-item ">
+            <a href="/course/type/3.html" title="菜鸟学堂">菜鸟学堂</a>
+        </li>
+    </ul>
+    
+                <ul class='php-user'>
+        <li><span id="login">登录</span></li>
+        <li class='php-reg'><span id="reg">注册</span></li>
+        </ul>
+            <div class="layui-form component">
+        <div class="layui-form-select">
+            <div class="layui-select-title">
+                <input type="text" id="key_words" placeholder="输入关键词搜索" onkeyup="keyup()" style="background:#000" class="layui-input"><a href="javascript:;" onclick="searchs()"><i class="layui-icon">&#xe615;</i></a>
+            </div>
+        </div>
+    </div>
+	</div>
+<div class="layui-main" style=' margin-top: 20px;'>
+
+	<div class="layui-row php-article">
+    <div class="layui-col-md8 article-list-left">
+		<div class='profile'>
+			<div><a href="/">首页</a> > <a href="/be/">后端开发</a> > <a href="/php-weizijiaocheng.html">php教程</a> > 正文</div>
+			<h1>PHP中有漏洞的函数总结</h1>
+			<span title="是否原创"><i class="layui-icon">&#xe609;</i>原创</span>
+			<span><i class="layui-icon" title="添加时间">&#xe60e;</i>
+						2018-03-08 17:41:44			</span>
+			<span ><i class="layui-icon" title="评论">&#xe63a;</i>0</span>
+			<span class='hot'><i class="layui-icon" title="浏览">&#xe756;</i>395</span>
+		</div>
+				<a href="/vip.html" target="_blank" rel="nofollow"><img src="/static/images/article_vip.gif" alt="赞助会员专享特权"></a>
+		<div class='detail-content-wrap'>
+							<div class='content'>
+					本篇文章讲述了PHP中存在这一些带有小漏洞的PHP函数，没有了解过PHP中有漏洞函数的可以看看，在实际的PHP开发中用到这些函数时需要注意哪些东西，我们废话少说，一起来看看这篇文章吧！</p><div></div><div><span style="font-size: 16px;"><strong>1.弱类型比较</strong></span></div><p><br/></p><center><img src="http://img.php.cn/upload/article/000/013/745/3a32b064380f17996f656a504474d252-0.jpg" alt="这里写图片描述" title=""/></center><p><br/></p><h3><strong>2.MD5 compare漏洞</strong></h3><p>PHP在处理哈希字符串时，如果利用”!=”或”==”来对哈希值进行比较，它把每一个以”0x”开头的哈希值都解释为科学计数法0的多少次方（为0），所以如果两个不同的密码经过哈希以后，其哈希值都是以”0e”开头的，那么php将会认为他们相同。  <br/></p><p>常见的payload有</p><pre class="brush:php;toolbar:false">0x01 md5(str)
+    QNKCDZO
+    240610708
+    s878926199a
+    s155964671a
+    s214587387a
+    s214587387a
+0x02 sha1(str)
+    sha1(&#39;aaroZmOk&#39;)  
+    sha1(&#39;aaK1STfY&#39;)
+    sha1(&#39;aaO8zKZF&#39;)
+    sha1(&#39;aa3OFF9m&#39;)</pre><p>同时MD5不能处理数组，若有以下判断则可用数组绕过</p><pre class="brush:php;toolbar:false">if(@md5($_GET[&#39;a&#39;]) == @md5($_GET[&#39;b&#39;]))
+{
+    echo &quot;yes&quot;;
+}
+//http://127.0.0.1/1.php?a[]=1&amp;b[]=2</pre><h3><strong>3.ereg函数漏洞：00截断</strong></h3><pre class="prettyprint">ereg (&quot;^[a-zA-Z0-9]+$&quot;, $_GET[&#39;password&#39;]) === FALSE</pre><p>字符串对比解析  <br/>在这里如果 $_GET[‘password’]为数组，则返回值为NULL  <br/>如果为123 || asd || 12as || 123%00&amp;&amp;&amp;**，则返回值为true  <br/>其余为false</p><h3><strong>4.$key是什么？</strong></h3><p>别忘记程序可以把变量本身的key也当变量提取给函数处理。</p><pre class="brush:php;toolbar:false">&lt;?php
+    print_r(@$_GET); 
+    foreach ($_GET AS $key =&gt; $value)
+    {
+        print $key.&quot;\n&quot;;
+    }
+?&gt;</pre><h3><strong>5.变量覆盖</strong></h3><p>主要涉及到的函数为extract函数，看个例子</p><pre class="brush:php;toolbar:false">&lt;?php  
+    $auth = &#39;0&#39;;  
+    // 这里可以覆盖$auth的变量值
+    print_r($_GET);
+    echo &quot;&lt;/br&gt;&quot;;
+    extract($_GET); 
+    if($auth == 1){  
+        echo &quot;private!&quot;;  
+    } else{  
+        echo &quot;public!&quot;;  
+    }  
+?&gt;</pre><p>extract可以接收数组，然后重新给变量赋值，过程页很简单。 <br/></p><center><img src="http://img.php.cn/upload/article/000/013/745/3a32b064380f17996f656a504474d252-1.png" alt="这里写图片描述" title=""/></center><p><br/></p><p>同时！PHP的特性$可以用来赋值变量名也能导致变量覆盖！</p><pre class="prettyprint">&lt;?php  
+    $a=&#39;hi&#39;;
+    foreach($_GET as $key =&gt; $value) {
+        echo $key.&quot;&lt;/br&gt;&quot;.$value;
+        $$key = $value;
+    }
+    print &quot;&lt;/br&gt;&quot;.$a;
+?&gt;</pre><p>构造<code>http://127.0.0.1:8080/test.php?a=12</code> 即可达到目的。</p><h3><strong>6.strcmp</strong></h3><pre class="brush:php;toolbar:false">如果 str1 小于 str2 返回 &lt; 0； 如果 str1 大于 str2 返回 &gt; 0；如果两者相等，返回 0。 
+先将两个参数先转换成string类型。 
+当比较数组和字符串的时候，返回是0。 
+如果参数不是string类型，直接return</pre><pre class="brush:php;toolbar:false">&lt;?php
+    $password=$_GET[&#39;password&#39;];
+    if (strcmp(&#39;xd&#39;,$password)) {
+     echo &#39;NO!&#39;;
+    } else{
+        echo &#39;YES!&#39;;
+    }
+?&gt;</pre><p>构造<code>http://127.0.0.1:8080/test.php?password[]=</code></p><h3><strong>7.is_numeric</strong></h3><p>无需多言：</p><pre class="brush:php;toolbar:false">&lt;?php
+echo is_numeric(233333);       # 1
+echo is_numeric(&#39;233333&#39;);    # 1
+echo is_numeric(0x233333);    # 1
+echo is_numeric(&#39;0x233333&#39;);   # 1
+echo is_numeric(&#39;233333abc&#39;);  # 0
+?&gt;</pre><h3><strong>8.preg_match</strong></h3><p><strong>如果在进行<a href="http://www.php.cn/wiki/588.html" target="_blank">正则表达式</a>匹配的时候，没有限制字符串的开始和结束(^ 和 $)，则可以存在绕过的问题</strong></p><pre class="brush:php;toolbar:false">&lt;?php
+$ip = &#39;asd 1.1.1.1 abcd&#39;; // 可以绕过
+if(!preg_match(&quot;/(\d+)\.(\d+)\.(\d+)\.(\d+)/&quot;,$ip)) {
+  die(&#39;error&#39;);
+} else {
+   echo(&#39;key...&#39;);
+}
+?&gt;</pre><h3><strong>9.parse_str</strong></h3><p>与 parse_str() 类似的函数还有 mb_parse_str()，parse_str 将字符串解析成多个变量，如果参数str是URL传递入的查询字符串（query string），则将它解析为变量并设置到当前作用域。 <br/>时变量覆盖的一种</p><pre class="brush:php;toolbar:false">&lt;?php
+    $var=&#39;init&#39;;  
+    print $var.&quot;&lt;/br&gt;&quot;;
+    parse_str($_SERVER[&#39;QUERY_STRING&#39;]);  
+    echo $_SERVER[&#39;QUERY_STRING&#39;].&quot;&lt;/br&gt;&quot;;
+    print $var;
+?&gt;</pre><h3><strong>10.<a href="http://www.php.cn/code/7518.html" target="_blank">字符串比较</a></strong></h3><pre class="prettyprint">&lt;?php  
+    echo 0 == &#39;a&#39; ;// a 转换为数字为 0    重点注意
+    // 0x 开头会被当成16进制54975581388的16进制为 0xccccccccc
+    // 十六进制与整数，被转换为同一进制比较
+    &#39;0xccccccccc&#39; == &#39;54975581388&#39; ;
+
+    // 字符串在与数字比较前会自动转换为数字，如果不能转换为数字会变成0
+    1 == &#39;1&#39;;
+    1 == &#39;01&#39;;
+    10 == &#39;1e1&#39;;
+    &#39;100&#39; == &#39;1e2&#39; ;    
+
+    // 十六进制数与带空格十六进制数，被转换为十六进制整数
+    &#39;0xABCdef&#39;  == &#39;     0xABCdef&#39;;
+    echo &#39;0010e2&#39; == &#39;1e3&#39;;
+    // 0e 开头会被当成数字，又是等于 0*10^xxx=0
+    // 如果 md5 是以 0e 开头，在做比较的时候，可以用这种方法绕过
+    &#39;0e509367213418206700842008763514&#39; == &#39;0e481036490867661113260034900752&#39;;
+    &#39;0e481036490867661113260034900752&#39; == &#39;0&#39; ;
+
+    var_dump(md5(&#39;240610708&#39;) == md5(&#39;QNKCDZO&#39;));
+    var_dump(md5(&#39;aabg7XSs&#39;) == md5(&#39;aabC9RqS&#39;));
+    var_dump(sha1(&#39;aaroZmOk&#39;) == sha1(&#39;aaK1STfY&#39;));
+    var_dump(sha1(&#39;aaO8zKZF&#39;) == sha1(&#39;aa3OFF9m&#39;));
+?&gt;</pre><h3><strong>11.unset</strong></h3><p>unset(bar);用来销毁指定的变量，如果变量bar 包含在<a href="http://www.php.cn/php/php-tp-parameter.html" target="_blank">请求参数</a>中，可能出现销毁一些变量而实现程序逻辑绕过。</p><pre class="brush:php;toolbar:false">&lt;?php  
+$_CONFIG[&#39;extraSecure&#39;] = true;
+
+foreach(array(&#39;_GET&#39;,&#39;_POST&#39;) as $method) {
+    foreach($$method as $key=&gt;$value) {
+      // $key == _CONFIG
+      // $$key == $_CONFIG
+      // 这个函数会把 $_CONFIG 变量销毁
+      unset($$key);
+    }
+}
+
+if ($_CONFIG[&#39;extraSecure&#39;] == false) {
+    echo &#39;flag {****}&#39;;
+}
+?&gt;</pre><h3><strong>12.intval()</strong></h3><p>int转string：</p><pre class="prettyprint">$var = 5;  
+方式1：$item = (string)$var;  
+方式2：$item = strval($var);</pre><p>string转int：intval()函数。</p><pre class="prettyprint">var_dump(intval(&#39;2&#39;)) //2  
+var_dump(intval(&#39;3abcd&#39;)) //3  
+var_dump(intval(&#39;abcd&#39;)) //0 
+// 可以使用字符串-0转换，来自于wechall的方法</pre><p>说明intval()转换的时候，会将从字符串的开始进行转换直到遇到一个非数字的字符。即使出现无法转换的字符串，intval()不会报错而是返回0 <br/>顺便说一下，intval可以被%00截断</p><pre class="prettyprint">if($req[&#39;number&#39;]!=strval(intval($req[&#39;number&#39;]))){
+     $info = &quot;number must be equal to it&#39;s integer!! &quot;;  
+}</pre><p>如果当$req[‘number’]=0%00即可绕过</p><h3><strong>13.switch()</strong></h3><p>如果switch是数字类型的case的判断时，switch会将其中的参数转换为int类型，效果相当于intval函数。如下：</p><pre class="prettyprint">&lt;?php
+    $i =&quot;abc&quot;;  
+    switch ($i) {  
+    case 0:  
+    case 1:  
+    case 2:  
+    echo &quot;i is less than 3 but not negative&quot;;  
+    break;  
+    case 3:  
+    echo &quot;i is 3&quot;;  
+    } 
+?&gt;</pre><h3><strong>14.in_array()</strong></h3><pre class="prettyprint">$array=[0,1,2,&#39;3&#39;];  
+var_dump(in_array(&#39;abc&#39;, $array)); //true  
+var_dump(in_array(&#39;1bc&#39;, $array)); //true</pre><p>在所有php认为是int的地方输入string，都会被<a href="http://www.php.cn/code/12041.html" target="_blank">强制转换</a></p><h3><strong>15.serialize 和 unserialize漏洞</strong></h3><pre class="brush:php;toolbar:false">这里我们先简单介绍一下php中的魔术方法（这里如果对于类、对象、方法不熟的先去学学吧），即Magic方法，php类可能会包含一些特殊的函数叫magic函数，magic函数命名是以符号开头的，比如 construct， destruct，toString，sleep，wakeup等等。这些函数都会在某些特殊时候被自动调用。 
+例如construct()方法会在一个对象被创建时自动调用，对应的destruct则会在一个对象被销毁时调用等等。 
+这里有两个比较特别的Magic方法，sleep 方法会在一个对象被序列化的时候调用。 wakeup方法会在一个对象被反序列化的时候调用。</pre><pre class="brush:php;toolbar:false">&lt;?php
+class test
+{
+    public $username = &#39;&#39;;
+    public $password = &#39;&#39;;
+    public $file = &#39;&#39;;
+    public function out(){
+        echo &quot;username: &quot;.$this-&gt;username.&quot;&lt;br&gt;&quot;.&quot;password: &quot;.$this-&gt;password ;
+    }
+     public function toString() {
+        return file_get_contents($this-&gt;file);
+    }
+}
+$a = new test();
+$a-&gt;file = &#39;C:\Users\YZ\Desktop\plan.txt&#39;;
+echo serialize($a);
+?&gt;
+//tostring方法会在输出实例的时候执行，如果实例路径是隐秘文件就可以读取了</pre><p>echo unserialize触发了tostring函数，下面就可以读取了C:\Users\YZ\Desktop\plan.txt文件了</p><pre class="brush:php;toolbar:false">&lt;?php
+class test
+{
+    public $username = &#39;&#39;;
+    public $password = &#39;&#39;;
+    public $file = &#39;&#39;;
+    public function out(){
+        echo &quot;username: &quot;.$this-&gt;username.&quot;&lt;br&gt;&quot;.&quot;password: &quot;.$this-&gt;password ;
+    }
+     public function toString() {
+        return file_get_contents($this-&gt;file);
+    }
+}
+$a = &#39;O:4:&quot;test&quot;:3:{s:8:&quot;username&quot;;s:0:&quot;&quot;;s:8:&quot;password&quot;;s:0:&quot;&quot;;s:4:&quot;file&quot;;s:28:&quot;C:\Users\YZ\Desktop\plan.txt&quot;;}&#39;;
+echo unserialize($a);
+?&gt;</pre><h3><strong>16.session 反序列化漏洞</strong></h3><p>主要原因是  <br/>ini_set(‘session.serialize_handler’, ‘php_serialize’);  <br/>ini_set(‘session.serialize_handler’, ‘php’);  <br/>两者处理session的方式不同 <br/>这个玩意不是很明白，后面专门写个题解吧！ <br/>这里有个题目嗯！这是个<a href="http://web.jarvisoj.com:32784/" target="_blank">题目</a></p><p><span style="font-size: 16px;"><strong>相关推荐：</strong></span></p><p><a href="http://www.php.cn/php-weizijiaocheng-381296.html" target="_blank">PHP函数的基本结构</a><p>以上就是PHP中有漏洞的函数总结的详细内容，更多请关注php中文网其它相关文章！</p>				
+				<div class='share layui-clear bdsharebuttonbox'>
+					<li ><a href='javascript:;' data-cmd="weixin" class='wechat'><i class="layui-icon">&#xe63a;</i>微信</a></li>
+					<li ><a href='javascript:;' data-cmd="more" class='share-btn'><i class="layui-icon">&#xe641;</i>分享</a></li>
+				</div>
+				<img src="/static/images/article_wechat.jpg?1" style="margin-top: 30px;" alt="php中文网最新课程二维码"/>
+				<div class='tags layui-clear'>
+				<li>相关标签：<a href="/search?word=有漏洞" target="_blank">有漏洞</a> <a href="/search?word=php" target="_blank">php</a> <a href="/search?word=函数" target="_blank">函数</a></li>
+					<li class='line'>
+												本文原创发布php中文网 ，转载请注明出处，感谢您的尊重！
+											</li>
+				</div>
+								<div class='page layui-clear'>
+					<ul>
+												<li>上一篇：<a href="/php-weizijiaocheng-387799.html">PHP操作字符串详解</a></li>
+												<li>下一篇：<a href="/php-weizijiaocheng-387816.html">php抠图教程（混合模式+剪切蒙版） </a></li>
+											</ul>
+				</div>
+			    				</div>
+				<p style="font-size: 18px;">相关文章</p>
+				<hr>
+								<li><span class="layui-badge-dots"></span><a class="relevant" href="/php-weizijiaocheng-4.html">PHP如何安装和配置？</a></li>
+								<li><span class="layui-badge-dots"></span><a class="relevant" href="/php-weizijiaocheng-5.html">php 和 python 语法（部分）上的区别</a></li>
+								<li><span class="layui-badge-dots"></span><a class="relevant" href="/php-weizijiaocheng-12.html">PHP 随机数 C扩展随机数</a></li>
+								<li><span class="layui-badge-dots"></span><a class="relevant" href="/php-weizijiaocheng-316.html">PHP查询附近的人及其距离的实现方法_php技巧</a></li>
+							<li><span class="layui-badge-dots"></span><a class="relevant" href="/php-weizijiaocheng-387815.html">PHP中有漏洞的函数总结</a></li>
+		</div>
+
+		<div class="comment">
+				<div class="J_Header" id="J_Header">
+					<h1 class="header-title">网友评论</h1>
+					<p class="header-protocol">文明上网理性发言，请遵守
+						<a href="javascript:void(0);">新闻评论服务协议</a></p>
+						<a class="article-comment-publish" href="javascript:void(0);">我要评论</a>
+										</div>
+
+				
+				<div class="text-box layui-clear article_comment_textarea" >
+						<div class="box-left">
+							<li>
+								<a href="javascript:login_trigger()">
+									<img src="/static/images/user_avatar.jpg" alt="">
+								</a>
+							</li>
+							<li><a href="javascript:login_trigger()"></a></li>
+						</div>
+						<div class="box-right">
+							<textarea name="desc" placeholder="请输入内容" class="layui-textarea article_textarea"></textarea>
+							<button class="layui-btn article_publish" data-id="387815">立即提交</button>
+						</div>
+				</div>
+		</div>
+		
+		<!--推荐新闻-->
+		<div class="article-hot pinBoxContainer" id="tab_detail_list">
+			<div class="layui-col-md12 php-news-left ">
+				  <ul class='php-news-left-ul'>
+				  							<li><a href='/course/list/29.html'> PHP</a></li>
+											<li><a href='/course/list/51.html'> MySQL</a></li>
+											<li><a href='/course/list/11.html'> HTML</a></li>
+											<li><a href='/course/list/12.html'> CSS</a></li>
+											<li><a href='/course/list/17.html'> JavaScript</a></li>
+											<li><a href='/course/list/19.html'> jQuery</a></li>
+											<li><a href='/course/list/25.html'> AJAX</a></li>
+											<li><a href='/course/list/13.html'> Html5</a></li>
+										<div class="clear"></div>
+				  </ul>
+			</div>
+			<div class="layui-col-md12  php-news-info" style="background-color:#fff;">
+								<div class="layui-row diy-border">
+					<div class="layui-col-md3 ">
+					 <a href="/course/486.html" target="_blank"><img width="180" height="124" src="http://img.php.cn/upload/course/000/000/003/5a50894c3ee41784.jpg" alt="独孤九贱(5)_ThinkPHP5视频教程"></a>
+					</div>
+					<div class="layui-col-md9" >
+					  <h3><a target="_blank" href="/course/486.html">独孤九贱(5)_ThinkPHP5视频教程</a></h3>
+					  <p title="ThinkPHP是国内最流行的中文PHP开发框架,也是您Web项目的最佳选择。《php.cn独孤九贱(5)－ThinkPHP5视频教程》课程以ThinkPHP5最新版本为例，从最基本的框架常识开始，将您在开发要用到的所有知识点，娓娓道来。语言选简洁明快，实例简单实用，只你具备基本的PHP的语法常识，就可以跟着PHP中文网的这套原创课程，学会用ThinkPHP5创建您的项目。从用户请求到响应输出，从控制器到路由，从模型知识到模板调试，在本套课程中，你总可以找到你的最爱。">ThinkPHP是国内最流行的中文PHP开发框架,也是您Web项目的最佳选择。《php.cn独孤九贱(5)－ThinkPHP5视频教程》课程以ThinkPHP5最新版本为例，从最基本的框架常识开始，将...</p>
+					  <p>
+						</p><ul class="php-li-float-left diy-li-course-user">
+							<li>
+								<a target="_blank" class='course-user' href="member/1120.html"><img  src="http://img.php.cn/upload/avatar/000/001/120/5bdff93895600756.jpeg"> Peter-Zhu</a>
+							</li>
+							<li>2017-05-16 12:03:57</li>
+							<li>点击数(175948)</li>
+						</ul>
+					 <p></p>
+					</div>
+				</div>
+								<div class="layui-row diy-border">
+					<div class="layui-col-md3 ">
+					 <a href="/course/379.html" target="_blank"><img width="180" height="124" src="http://img.php.cn/upload/course/000/000/003/5a508deef1e58616.jpg" alt="独孤九贱(4)_PHP视频教程"></a>
+					</div>
+					<div class="layui-col-md9" >
+					  <h3><a target="_blank" href="/course/379.html">独孤九贱(4)_PHP视频教程</a></h3>
+					  <p title="江湖传言：PHP是世界上最好的编程语言。真的是这样吗？这个梗究竟是从哪来的？学会本课程，你就会明白了。
+PHP中文网出品的PHP入门系统教学视频，完全从初学者的角度出发，绝不玩虚的，一切以实用、有用为原则，让你学得会，记得住，用得上。学习PHP编程，不得不提醒阁下，前端的基础知识，还是要有一点的。当然不要求精通，但必须对基本标签、基本概念和术语有一定了解，否则，会对你的学习信心造成小打击哟~~（php中文网上有很多优秀的html,css,javascript教程可供您参考，如果你选择我们官方原创课程最好啦）">江湖传言：PHP是世界上最好的编程语言。真的是这样吗？这个梗究竟是从哪来的？学会本课程，你就会明白了。
+PHP中文网出品的PHP入门系统教学视频，完全从初学者的角度出发，绝不玩虚的，一切以实用、有用...</p>
+					  <p>
+						</p><ul class="php-li-float-left diy-li-course-user">
+							<li>
+								<a target="_blank" class='course-user' href="member/1120.html"><img  src="http://img.php.cn/upload/avatar/000/001/120/5bdff93895600756.jpeg"> Peter-Zhu</a>
+							</li>
+							<li>2017-03-20 22:47:17</li>
+							<li>点击数(171749)</li>
+						</ul>
+					 <p></p>
+					</div>
+				</div>
+								<div class="layui-row diy-border">
+					<div class="layui-col-md3 ">
+					 <a href="/course/372.html" target="_blank"><img width="180" height="124" src="http://img.php.cn/upload/course/000/000/003/5a5091db685e6482.jpg" alt="独孤九贱(1)_HTML5视频教程"></a>
+					</div>
+					<div class="layui-col-md9" >
+					  <h3><a target="_blank" href="/course/372.html">独孤九贱(1)_HTML5视频教程</a></h3>
+					  <p title="《php.cn原创html5视频教程》课程特色：php中文网原创幽默段子系列课程，以恶搞，段子为主题风格的php视频教程！轻松的教学风格，简短的教学模式，让同学们在不知不觉中，学会了HTML知识。
+每节课内容精炼，长度不超过10分钟，非常适合您利用碎片时间来学习。地铁上、等人、候车、餐厅无处不学习~~">《php.cn原创html5视频教程》课程特色：php中文网原创幽默段子系列课程，以恶搞，段子为主题风格的php视频教程！轻松的教学风格，简短的教学模式，让同学们在不知不觉中，学会了HTML知识。
+...</p>
+					  <p>
+						</p><ul class="php-li-float-left diy-li-course-user">
+							<li>
+								<a target="_blank" class='course-user' href="member/1120.html"><img  src="http://img.php.cn/upload/avatar/000/001/120/5bdff93895600756.jpeg"> Peter-Zhu</a>
+							</li>
+							<li>2017-03-13 10:15:11</li>
+							<li>点击数(139366)</li>
+						</ul>
+					 <p></p>
+					</div>
+				</div>
+								<div class="layui-row diy-border">
+					<div class="layui-col-md3 ">
+					 <a href="/course/593.html" target="_blank"><img width="180" height="124" src="http://img.php.cn/upload/course/000/000/003/5a9ce29211b72919.jpg" alt="ThinkPHP5实战之[教学管理系统]"></a>
+					</div>
+					<div class="layui-col-md9" >
+					  <h3><a target="_blank" href="/course/593.html">ThinkPHP5实战之[教学管理系统]</a></h3>
+					  <p title="本套教程,以一个真实的学校教学管理系统为案例,手把手教会您如何在一张白纸上,从零开始,一步一步的用ThinkPHP5框架快速开发出一个商业项目。">本套教程,以一个真实的学校教学管理系统为案例,手把手教会您如何在一张白纸上,从零开始,一步一步的用ThinkPHP5框架快速开发出一个商业项目。</p>
+					  <p>
+						</p><ul class="php-li-float-left diy-li-course-user">
+							<li>
+								<a target="_blank" class='course-user' href="member/1120.html"><img  src="http://img.php.cn/upload/avatar/000/001/120/5bdff93895600756.jpeg"> Peter-Zhu</a>
+							</li>
+							<li>2017-07-24 16:48:56</li>
+							<li>点击数(132191)</li>
+						</ul>
+					 <p></p>
+					</div>
+				</div>
+								<div class="layui-row diy-border">
+					<div class="layui-col-md3 ">
+					 <a href="/course/170.html" target="_blank"><img width="180" height="124" src="http://img.php.cn/upload/course/000/000/003/5a53132d0bd62424.jpg" alt="PHP入门视频教程之一周学会PHP"></a>
+					</div>
+					<div class="layui-col-md9" >
+					  <h3><a target="_blank" href="/course/170.html">PHP入门视频教程之一周学会PHP</a></h3>
+					  <p title="所有计算机语言的学习都要从基础开始，《PHP入门视频教程之一周学会PHP》不仅是PHP的基础部分更主要的是PHP语言的核心技术，是学习PHP必须掌握的内容，任何PHP项目的实现都离不开这部分的内容，通过一周的深入学习让你快速掌握PHP的各项技能，助你的工作和学习更上层楼！">所有计算机语言的学习都要从基础开始，《PHP入门视频教程之一周学会PHP》不仅是PHP的基础部分更主要的是PHP语言的核心技术，是学习PHP必须掌握的内容，任何PHP项目的实现都离不开这部分的内容，通...</p>
+					  <p>
+						</p><ul class="php-li-float-left diy-li-course-user">
+							<li>
+								<a target="_blank" class='course-user' href="member/4.html"><img  src="http://img.php.cn/upload/avatar/000/000/004/5c511d62e6c0e698.png"> 大家讲道理</a>
+							</li>
+							<li>2016-11-16 14:54:14</li>
+							<li>点击数(131839)</li>
+						</ul>
+					 <p></p>
+					</div>
+				</div>
+							</div>
+			<div class="clear"></div>
+		</div>
+</div>
+	<div class="layui-col-md4 article-list-right ">
+		<div class="panel">
+				<div class="panel-title">作者信息</div>
+				<div id="profile-2">
+					<div class="avatar-wrap">
+						<a href="/member/13745.html" target="_blank" class="avatar-link">
+							<img src="http://img.php.cn/upload/avatar/000/013/745/5ad7f3132f63e720.jpg" class="func-um_user gravatar avatar avatar-120 um-avatar um-avatar-uploaded">
+						</a>
+					</div>
+					<div class="profile-info">
+						<p>
+							<span class="author-name">韦小宝</span>
+							<i class="layui-icon layui-icon-auz" title="认证作者"></i>
+						</p>
+						<p class="author-description">每日分享一个编程小知识，每日进步一点点！</p>
+						<div class="author-article">
+							<dl class="list-one">
+								<dt class="panel-title">最近文章</dt>
+																<dd>
+									<a href="/linux-406460.html" target="_blank" title="最全的Linux下的压缩和解压zip、gz、tar、bz2文件命令（图文步骤详解）">最全的Linux下的压缩和解压zip、gz、tar、bz2文件命令（图文步骤详解）</a>
+									<span><i class="layui-icon layui-icon-fire"></i>464</span>
+								</dd>
+																<dd>
+									<a href="/php-weizijiaocheng-406456.html" target="_blank" title="tp5.1框架的下载与安装方法步骤（图文）">tp5.1框架的下载与安装方法步骤（图文）</a>
+									<span><i class="layui-icon layui-icon-fire"></i>2441</span>
+								</dd>
+																<dd>
+									<a href="/php-weizijiaocheng-406455.html" target="_blank" title="高效率php调试错误提示工具：最新版PHPstorm中的xdebug配置与使用详解(图)">高效率php调试错误提示工具：最新版PHPstorm中的xdebug配置与使用详解(图)</a>
+									<span><i class="layui-icon layui-icon-fire"></i>1105</span>
+								</dd>
+															</dl>
+						</div>
+					</div>
+				</div>
+		</div>
+
+		<div class="layui-clear"><a href='javascript:publish_article()' class='layui-btn layui-btn-danger article-add'>发布技术文章</a> </div>
+		<div class='top-article layui-clear'>
+			<div class="layui-tab layui-tab-card">
+			  <ul class="layui-tab-title">
+			    <li class="layui-this">最新文章</li>
+			    <li>热门排行</li>
+			  </ul>
+			  <div class="layui-tab-content">
+			    <div class="layui-tab-item layui-show">
+			    	<ul>
+						<p class='top-img'>
+							<a href='/toutiao-387072.html' target="_blank" title='面对巨额亏损的PHP中文网，我该为情怀买单吗？（猪哥）'><img src='http://img.php.cn/upload/article/000/000/003/5b890a9e4417f872.png' style="width: 100%"></a>
+						</p>
+												<li><a href='/php-weizijiaocheng-421396.html' target="_blank" title='PHP怎么把JSON转换成数组？'>PHP怎么把JSON转换成数组？</a></li>
+												<li><a href='/php-weizijiaocheng-421276.html' target="_blank" title='学php看什么书'>学php看什么书</a></li>
+												<li><a href='/php-weizijiaocheng-421246.html' target="_blank" title='memcache安全相关'>memcache安全相关</a></li>
+												<li><a href='/php-weizijiaocheng-421244.html' target="_blank" title='memcache图形化管理工具MemAdmin'>memcache图形化管理工具MemAdmin</a></li>
+												<li><a href='/php-weizijiaocheng-421215.html' target="_blank" title='php echo什么意思'>php echo什么意思</a></li>
+												<li><a href='/php-weizijiaocheng-421212.html' target="_blank" title='php中什么是魔术引号'>php中什么是魔术引号</a></li>
+												<li><a href='/php-weizijiaocheng-421162.html' target="_blank" title='wampserver怎么下载'>wampserver怎么下载</a></li>
+												<li><a href='/php-weizijiaocheng-420638.html' target="_blank" title='php适合做微服务么'>php适合做微服务么</a></li>
+												
+					</ul>
+			    </div>
+			    <div class="layui-tab-item">
+			    	<ul>
+						<p class='top-img'>
+							<a href='/toutiao-387072.html' target="_blank" title='面对巨额亏损的PHP中文网，我该为情怀买单吗？（猪哥）'><img src='http://img.php.cn/upload/article/000/000/003/5b890a9e4417f872.png' style="width: 100%"></a>
+						</p>
+												<li><a href='/php-weizijiaocheng-393700.html' target="_blank" title='最全最详细的PHP面试题(带有答案)'>最全最详细的PHP面试题(带有答案)</a></li>
+												<li><a href='/php-weizijiaocheng-413538.html' target="_blank" title='VPN是什么'>VPN是什么</a></li>
+												<li><a href='/php-weizijiaocheng-386709.html' target="_blank" title='PHP四大主流框架的优缺点总结'>PHP四大主流框架的优缺点总结</a></li>
+												<li><a href='/php-weizijiaocheng-361604.html' target="_blank" title='php如何解决中文乱码问题？'>php如何解决中文乱码问题？</a></li>
+												<li><a href='/php-weizijiaocheng-350416.html' target="_blank" title='php是什么文件？怎么打开？四种打开php格式文件方法（图）'>php是什么文件？怎么打开？四种打开php格式文件方法（图）</a></li>
+												<li><a href='/php-weizijiaocheng-383120.html' target="_blank" title='详解PHPMyadmin的配置'>详解PHPMyadmin的配置</a></li>
+												<li><a href='/php-weizijiaocheng-381903.html' target="_blank" title='PHPstorm破解方法'>PHPstorm破解方法</a></li>
+												<li><a href='/php-weizijiaocheng-393305.html' target="_blank" title='PHP中使用CURL之php curl详细解析和常见大坑 '>PHP中使用CURL之php curl详细解析和常见大坑 </a></li>
+												
+					</ul>
+			    </div>
+			  </div>
+			</div>
+
+			
+		</div>
+		<div class="article-course	php-news-right-imginfo" style='margin-bottom:20px;'>
+			<h3 class='article-title'>相关视频教程</h3>
+							<li>
+				<a href='/course/179.html' target="_blank" >
+					<img src='http://img.php.cn/upload/course/000/000/003/5a17982d48686254.jpg' alt="javascript初级视频教程" height='60'>
+				</a>
+				<span><a href='/course/179.html' target="_blank">javascript初级视频教程</a></span>
+			</li>
+						<li>
+				<a href='/course/181.html' target="_blank" >
+					<img src='http://img.php.cn/upload/course/000/000/003/5a179283c3885703.jpg' alt="jquery 基础视频教程" height='60'>
+				</a>
+				<span><a href='/course/181.html' target="_blank">jquery 基础视频教程</a></span>
+			</li>
+						<li>
+				<a href='/course/198.html' target="_blank" >
+					<img src='http://img.php.cn/upload/course/000/000/003/5a169239acf9a131.jpg' alt="javascript三级联动视频教程" height='60'>
+				</a>
+				<span><a href='/course/198.html' target="_blank">javascript三级联动视频教程</a></span>
+			</li>
+						<li>
+				<a href='/course/386.html' target="_blank" >
+					<img src='http://img.php.cn/upload/course/000/000/003/5a508a6eb1fe2744.jpg' alt="独孤九贱(3)_JavaScript视频教程" height='60'>
+				</a>
+				<span><a href='/course/386.html' target="_blank">独孤九贱(3)_JavaScript视频教程</a></span>
+			</li>
+						<li>
+				<a href='/course/582.html' target="_blank" >
+					<img src='http://img.php.cn/upload/course/000/000/003/5a50879e1c81a337.jpg' alt="独孤九贱(6)_jQuery视频教程" height='60'>
+				</a>
+				<span><a href='/course/582.html' target="_blank">独孤九贱(6)_jQuery视频教程</a></span>
+			</li>
+					</div>
+		<div class='top-article layui-clear' id="aritcle_detail_new">
+			<h3 class='article-title'>相关视频章节</h3>
+			<ul>
+								<li><a href='/code/2.html' target="_blank" title='PHP开发基础教程之简介'>PHP开发基础教程之简介</a></li>
+								<li><a href='/code/4.html' target="_blank" title='PHP新手入门之简介'>PHP新手入门之简介</a></li>
+								<li><a href='/code/5.html' target="_blank" title='PHP开发基础教程之环境搭建'>PHP开发基础教程之环境搭建</a></li>
+								<li><a href='/code/6.html' target="_blank" title='php学习路线介绍'>php学习路线介绍</a></li>
+								<li><a href='/code/7.html' target="_blank" title='php环境配置'>php环境配置</a></li>
+							</ul>
+		</div>
+    </div>
+    </div>
+</div>
+<!--技术文章-->
+<script src="/static/ueditor/third-party/SyntaxHighlighter/shCore.js?3.1.1"></script>
+<script>article_status = 13745;</script>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script src="https://vdse.bdstatic.com//search-video.v1.min.js"></script>
+<div class="layui-clear layui-bg-black php-ul-li footer_top_margin">
+    <div class="layui-row  layui-main" >
+        <div class="layui-col-md9">
+            <ul class="php-float-left">
+                <li><a href="http://www.php.cn/" target="_blank" title="网站首页">网站首页 </a></li>
+                <li><a href="/course/list/29/type/2.html" target="_blank" title="PHP视频">PHP视频</a></li>
+                <li><a href="/course/list/29/type/4.html" target="_blank" title="PHP实战">PHP实战</a></li>
+                <li><a href="/course/list/29/type/1.html" target="_blank" title="PHP代码">PHP代码</a></li>
+                <li><a href="/course/list/29/type/3.html" target="_blank" title="PHP手册">PHP手册</a></li>
+                <li><a href="/wikis.html" target="_blank" title="词条">词条</a></li>
+                <li><a href="/write.html" target="_blank" title="手记">手记</a></li>
+            </ul>
+            <p class="layui-clear footer_phpcn">PHP中文网：独家原创，永久免费的在线php视频教程，php技术学习阵地！</p>
+            <p class="footer_phpcn_record">Copyright 2014-2018 http://www.php.cn/ All Rights Reserved | 皖B2-20150071-9 <img src="/static/images/foot_line.gif" width="15"> 皖公网安备 34010402701654号 <a href="http://112.30.63.109:8887/showEi?id=6a58f74d17984675aa1b671d0fa101cf&url=php.cn" rel="nofollow" target="_blank"><img src="/static/images/foot_line.gif" width="15"></a> <span class="footer_phpcn_say"><a href="/about/disclaimer.html" target="_blank">免责申明</a><a href="/about/donate.html" style="margin-right:40px" target="_blank">赞助与捐赠</a></span></p>
+            <p></p>
+        </div>
+        <div class="layui-col-md3" style="padding-top:15px;">
+            <img src="http://img.php.cn/upload/article/000/000/003/5c50106148dc3454.png" width="100" title="官方QQ群：977601088">&nbsp;&nbsp;<img src="/static/images/phpcn_erwei.jpg" width="100" title="扫一扫，关注公众号">
+
+        </div>
+    </div>
+</div>
+<input type="hidden" id="verifycode" value="/captcha.html">
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/layui/layui.js"></script>
+<script type="text/javascript" src="/static/js/global.min.js?5.4.14"></script>
+<script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?8cc45d54c337ca616c34b1cf747da91c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();(function(){var bp = document.createElement('script');var curProtocol = window.location.protocol.split(':')[0];if(curProtocol === 'https'){bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';}else{bp.src = 'http://push.zhanzhang.baidu.com/push.js';};var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(bp, s);})();</script>
+<script>
+var player = new searchVideo({
+	id: 'myVideo',
+	src: [""],
+	controls: true,
+	poster: '',
+	autoplay: false,
+	width: '100%',
+	height: '100%'
+});
+</script>
+</body>
+</html>
