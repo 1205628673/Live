@@ -1,0 +1,323 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>live</title>
+</head>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://cdn.bootcss.com/flv.js/1.5.0/flv.min.js"></script>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    body{
+        height:100%;
+        width: 100%;
+    }
+    #canvas{
+        position: absolute;
+        z-index:999;
+    }
+    .layout-main{
+        display: flex;
+        justify-content: center;
+        align-content: center;
+    }
+    .layout-bullet{
+        display: flex;
+        align-content:center;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 10px 0px;
+        background: #eeeeee;
+    }
+
+    .send-input{
+        width:300px;
+        height:30px;
+        border: 1px solid gray;
+        border-radius:50px;
+        margin:0px 10px;
+        outline:none;
+    }
+    .send-input:focus{
+        -webkit-border-radius: 50px;
+        -moz-border-radius: 50px;
+        border-radius: 50px;
+        border: 3px solid #a0ceff;
+        text-indent: 10px;
+        box-shadow: 0 0 10px blue;
+    }
+    .send-button{
+        width: 50px;
+        height:30px;
+        background: deeppink;
+        border-radius:50px;
+        border:1px solid #696969;
+        color: white;
+        font-size:17px;
+    }
+    .send-button:focus{
+        outline:none;
+        border:3px solid #a0ceff;
+        border-radius: 50px;
+        -webkit-box-shadow: 0 0 10px blue;
+    }
+    .choose-color{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: yellow;
+        border: 1px solid #696969;
+        margin: 0px 10px;
+    }
+    .count{
+        color: deeppink;
+    }
+</style>
+<body>
+   <nav class="navbar"></nav>
+    <div class="layout-main">
+        <canvas id="canvas">不支持canvas</canvas>
+        <div class="layout-Player">
+            <div class="Title">
+                <div class="Title-pic">
+                </div>
+                <div class="Title-roomInfo">
+                    <div class="Title-headline"></div>
+                    <div class="Title-catelogy"></div>
+                    <div class="Title-level"></div>
+                    <div class="Title-name"></div>
+                    <div class="Title-hot"></div>
+                    <div class="Title-impress"></div>
+                </div>
+            </div>
+            <div class="layout-player-main">
+                <div class="layout-player-video">
+                    <video id="videoElement" autoplay controls height="500px" width="700px" src="http://47.104.128.41:8887/live?port=8888&app=app&stream=stream" id="video">不支持video</video>
+                </div>
+            </div>
+            <div class="layout-bullet" id="bullet">
+                <span class="count">当前人数:</span><span class="count" id="count">{{onlinecount}}</span>&nbsp;
+                <label for="danmu" style="color:deeppink;">发送你的弹幕~</label>
+                    <input id="danmu" type="text" class="send-input" v-model="bulletmsg">
+                    <button type="button" class="send-button" @click="sendBullet">发送</button>
+                    <button type="button" class="choose-color" @click="chooseColor"></button>
+            </div>
+        </div>
+    </div>
+   <div class="layout-player-slider"></div>
+   <div class="layout-toolbar"></div>
+
+</body>
+<script>
+
+    var player = document.getElementById('videoElement');
+    if (flvjs.isSupported()) {
+        var flvPlayer = flvjs.createPlayer({
+            type: 'flv',
+            "isLive": true,//<====加个这个
+            url: 'http://47.104.128.41:8887/live?port=8888&app=app&stream=stream',//<==自行修改
+
+        });
+        flvPlayer.attachMediaElement(videoElement);
+        flvPlayer.load(); //加载
+        flv_start();
+    }
+
+    function flv_start() {
+        // player.play();
+    }
+
+    function flv_pause() {
+        //  player.pause();
+    }
+    function flv_destroy() {
+        player.pause();
+        player.unload();
+        player.detachMediaElement();
+        player.destroy();
+        player = null;
+    }
+    function flv_seekto() {
+        player.currentTime = parseFloat(document.getElementsByName('seekpoint')[0].value);
+    }
+
+</script>
+<script type="text/javascript">
+    var ws = new Vue({
+        el:'#bullet',
+        data:{
+            msg:'',
+            bulletmsg:'',
+            onlinecount:'',
+            ws:null,
+            bulletList:[],
+            track:[],
+            yArray:[80,100,20,300,380,210,90,120],
+            cxt:null,
+            width:700,
+            height:430,
+            controller:null,
+            tracker:null,
+        },
+        created(){
+          let canvas = document.getElementById('canvas');
+          canvas.width = this.width;
+          canvas.height = this.height;
+          this.ctx = canvas.getContext('2d');
+          this.ctx.font='30px Courier New';
+          this.initWebsocket();
+        },
+        mounted(){
+            var that = this;
+            that.controller = setInterval(function(){
+                for(var i =0;i<that.bulletList.length;i++) {
+                    let result = that.bulletList.pop();
+                    var bt = {x:700, text: result.msg, color: result.color};
+                    that.track.push(bt);
+                }
+            },5);
+            that.tracker = setInterval(function () {
+                that.ctx.clearRect(0,0,that.width,that.height);
+                for(var j =0;j<that.track.length;j++){
+                    let bt = that.track[j];
+                    let len = bt.text.length;
+                    if(len>=30) {
+                        bt.x -= len * 0.1;
+                    }else if(len>=10 && len<30){
+                        bt.x -= len * 0.2;
+                    }else{
+                        bt.x -= len * 0.3;
+                    }
+                    that.ctx.fillStyle = bt.color;
+                    that.ctx.fillText(bt.text,bt.x,that.yArray[j%8]);
+                }
+            },10);
+        },
+        destroyed(){
+          this.ws.close();
+          clearInterval(this.controller);
+          clearInterval(this.tracker);
+        },
+        methods:{
+            sendBullet: function () {
+                let bt = this.bulletmsg;
+                let count = this.onlinecount;
+                let msg = JSON.stringify({msg:bt,color:'yellow',onlinecount:count});
+                this.websocketsend(msg);
+            },
+            chooseColor: function () {
+
+            },
+            initWebsocket:function(){
+                const url = 'ws://localhost:8001/websocket/20';
+                this.ws = new WebSocket(url);
+                this.ws.onmessage = this.websocketonmessage;
+                this.ws.onopen = this.websocketonopen;
+                this.ws.onclose = this.websocketonclose;
+                this.ws.onerror = this.websocketonerror;
+            },
+            websocketonmessage: function (event) {
+                let result = JSON.parse(event.data);
+                console.info(result.onlineCount);
+                this.onlinecount = result.onlineCount;
+                this.bulletList.push(result);
+                this.bulletmsg = '';
+            },
+            websocketonopen: function () {
+              console.info('连接成功');
+            },
+            websocketonclose: function () {
+                console.info('断开连接');
+            },
+            websocketonerror: function () {
+                console.info('连接失败');
+            },
+            websocketsend: function (data) {
+                this.ws.send(data);
+            },
+        },
+    });
+</script>
+ <!--<script>
+    var canvas=document.getElementById('canvas');
+
+    var ctx=canvas.getContext("2d");
+
+    var video = document.getElementById('video');
+    var w;
+    var h;
+    video.addEventListener('loadedmetadata', function () {
+        h = this.videoHeight;
+        w = this.videoWidth;
+    });
+    var width=700;
+
+    var height=400;
+
+    var colorArr=["yellow","pink","orange","red","green"];
+    function rand(min,max){
+        r = Math.round(Math.random()*(max-min));
+        return r;
+    }
+    var track = [];//上轨道的弹幕
+    canvas.width=width;
+
+    canvas.height=height;
+
+    ctx.font = "30px Courier New";
+    //var numArrL=[500,100,5,300,500,430];//初始的X,弹幕初始在屏幕右侧，所以初始x为屏幕width
+
+    var numArrT=[80,100,20,300,380,210,90,120];//初始的Y,弹幕Y轴基本不变
+        var controller = setInterval(function(){
+            for(var i=0;i<bulletList.length;i++) {
+                var b = bulletList.pop();
+                track.push(b);
+            }
+        },5);
+        var run = setInterval(function () {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+
+            for(var i=0;i<track.length;i++){
+                    var bt = track[i];
+                    if(bt.x == 0){
+                        track.splice(i,1);
+                        continue;
+                    }
+                    var len = bt.length;
+                    bt.x -= len*0.3;
+                    ctx.fillStyle = colorArr[i%5];
+                    ctx.fillText(bt.text,bt.x,numArrT[i%8]);
+            }
+           // console.info('controller interval invoke');
+        },10);
+</script>
+<!--<script>
+    var video = document.getElementById("video");
+    video.addEventListener('loadedmetadata',function () {
+        var videoHeight = this.videoHeight;
+        var videoWidth = this.videoWidth;
+        var danmuBox = document.getElementById("danmu");
+            danmuBox.style.height = videoHeight;
+            danmuBox.style.width = videoWidth;
+
+    });
+        if("WebSocket" in window){
+            var ws = new WebSocket('ws://localhost:8001/websocket/20');
+            ws.onopen = function () {
+                ws.send("brower connection server");
+            }
+            ws.onmessage = function (event) {
+                var msg = event.data;
+                console.info(msg);
+            }
+            ws.onclose = function () {
+                alert("close websocket....");
+            }
+        }else{
+            alert("not support websocket");
+        }
+</script>-->
+</html>

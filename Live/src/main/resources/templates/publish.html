@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>rtmp client</title>
+    <link rel="stylesheet" href="//g.alicdn.com/mtb/lib-bootstrap/3.0.3/css/bootstrap.min.css">
+    <style type="text/css">
+        .container{
+            margin-top: 40px;
+            width: 1170px;
+        }
+        .rtmp-content{
+            margin-bottom: 20px;
+        }
+        .rtmp-wrap{
+            width: 100%;
+            height: 400px;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .tag{
+            height: 36px;
+            line-height: 36px;
+        }
+    </style>
+</head>
+<body>
+<app></app>
+<template id="template">
+    <div class="container" id="app">
+
+        <div class="row rtmp-content">
+            <form class="form-inline" @submit.prevent="push">
+                <div class="form-group col-sm-10">
+                    <input type="text" class="form-control" v-model="rtmp" placeholder="RTMP">
+                </div>
+                <button type="submit" class="btn btn-success">push</button>
+                <button type="button" class="btn btn-info" @click="disconnect">disconnect</button>
+            </form>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-8">
+                <div class="rtmp-wrap">
+                    <object>
+                        <embed
+                                id="rtmp-streamer"
+                                src="./RtmpStreamer.swf"
+                                bgcolor="#000000"
+                                quality="high"
+                                width="750"
+                                height="400"
+                                allowScriptAccess="sameDomain"
+                                type="application/x-shockwave-flash"></embed>
+                    </object>
+                </div>
+            </div>
+            <div class="col-xs-4">
+                <form class="form-horizontal" @submit.prevent="changeSetting">
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">CameraSize</label>
+                        <div class="col-sm-3">
+                            <input type="number" v-model="camWidth" class="form-control"/>
+                        </div>
+                        <div class="col-sm-1">
+                            <p class="tag">X</p>
+                        </div>
+                        <div class="col-sm-3">
+                            <input type="number" v-model="camHeight" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Quality</label>
+                        <div class="col-sm-3">
+                            <input type="number" v-model="quality" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">Bandwidth</label>
+                        <div class="col-sm-4">
+                            <input type="number" v-model="bandwidth" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">CameraFps</label>
+                        <div class="col-sm-3">
+                            <input type="number" v-model="camFps" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-4 control-label">CamFrameInterval</label>
+                        <div class="col-sm-3">
+                            <input type="number" v-model="camFrameInterval" class="form-control"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-8">
+                            <button type="submit" class="btn btn-success">submit</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</template>
+<script src="//g.alicdn.com/mtb/lib-vue/2.1.6/vue.min.js"></script>
+<script type="text/javascript">
+    var FIELDS = [
+        "quality",
+        "camFrameInterval",
+        "camHeight",
+        "camWidth",
+        "camFps",
+        "bandwidth"
+    ];
+
+    new Vue({
+        el: "app",
+        template: document.getElementById('template').innerHTML,
+        data: {
+            rtmp: "",
+            quality: 90,
+            camFrameInterval: 15,
+            camWidth: 400,
+            camHeight: 300,
+            camFps: 15,
+            bandwidth: 16384
+        },
+        mounted: function (){
+            this.streamer = document.getElementById('rtmp-streamer');
+        },
+        methods: {
+            push: function (){
+                if(this.rtmp.length === 0){
+                    alert('输入推流地址');
+                    return;
+                }
+
+                let urls = this.rtmp.split('/');
+                let name = urls.pop();
+                let url = urls.join("/");
+
+                this.streamer.setScreenSize(this.camWidth * 1.25, this.camHeight * 1.25);
+                // this.streamer.setScreenSize(800, 600);
+                // this.streamer.setScreenPosition(0, 0);
+                this.streamer.publish(url, name);
+            },
+            disconnect: function (){
+                this.streamer.disconnect();
+            },
+            changeSetting: function (){
+                var _this = this;
+
+                if(!this.streamer || !this.streamer.disconnect){
+                    alert("请先推流");
+                    return
+                }
+                for(var i = 0; i < FIELDS.length; i++){
+                    var field = FIELDS[i];
+                    if(!_this[field]){
+                        alert("请填写" + field)
+                        return
+                    }
+                    if(typeof _this[field] !== 'number'){
+                        alert("请按数字格式的值" + field);
+                        return
+                    }
+                }
+                this.streamer.setCamQuality(this.bandwidth, this.quality);
+                this.streamer.setCamFrameInterval(this.camFrameInterval);
+                this.streamer.setCamMode(this.camWidth, this.camHeight, this.camFps);
+            }
+        }
+    })
+</script>
+</body>
+</html>
