@@ -19,7 +19,6 @@ public class TwoLevelCacheManager extends RedisCacheManager{
     public TwoLevelCacheManager(RedisTemplate redisTemplate, RedisCacheWriter cacheWriter, RedisCacheConfiguration defaultConfiguration) {
         super(cacheWriter,defaultConfiguration);
         this.redisTemplate = redisTemplate;
-
     }
 
     @Override

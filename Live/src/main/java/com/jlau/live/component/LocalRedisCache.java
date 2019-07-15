@@ -22,7 +22,7 @@ public class LocalRedisCache implements Cache{
     }
 
     public void clearOtherJVM(){
-        this.cacheManager.publishMessage(redisCache.getName());
+        this.cacheManager.publishMessage(redisCache.getName());//获取缓存的名称
         this.local.clear();
     }
     public void clearLocal(){
